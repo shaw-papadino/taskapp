@@ -16,6 +16,8 @@ class Task: Object {
     
     dynamic var date = NSDate()
     
+    dynamic var category:Category?
+    
     override static func primaryKey() -> String? {
         return "id"
     }

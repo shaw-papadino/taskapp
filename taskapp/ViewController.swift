@@ -17,8 +17,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     let realm = try! Realm()
     var ctUIPicker: UIPickerView!
     var indexPath : IndexPath!
+    //var categoryArray = [""]
     var categoryArray = try! Realm().objects(Category.self).sorted(byKeyPath: "id", ascending: false)
     var taskArray = try! Realm().objects(Task.self).sorted(byKeyPath: "date", ascending: false)
+    
+    var task: Task!
+    var category: Category!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,8 +45,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         self.pickTextField.inputView = ctUIPicker
         self.pickTextField.inputAccessoryView = toolbar
         
-        let tapGesture: UITapGestureRecognizer = UITapGestureRecognizer(target:self, action:#selector(dismissKeyboard))
-        self.view.addGestureRecognizer(tapGesture)
+        //let tapGesture: UITapGestureRecognizer = UITapGestureRecognizer(target:self, action:#selector(dismissKeyboard))
+        //self.view.addGestureRecognizer(tapGesture)
     }
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -59,14 +63,28 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                     didSelectRow row: Int,
                     inComponent component: Int) {
         print(categoryArray[row])
+        print(taskArray)
         let categoryNum = categoryArray[row]
-        let categoryId = categoryNum.id
-        print(categoryId)
+        let categoryName = categoryNum.category
+        print(categoryName)
         self.pickTextField.text = categoryArray[row].category
+        //let predicate = NSPredicate(format: "category.category == %@ ", categoryName)
+        //taskArray = try! Realm().objects(Task.self).filter(predicate)
+        //let tskAN = try! Realm().objects(Task.self).filter("category.category = %@", categoryName)
+        //let category = try! Realm().objects(Task.category).filter("category = %@", categoryName)
         
-        let predicate = NSPredicate(format: "id == %d ", categoryId)
-        taskArray = try! Realm().objects(Task.self).filter(predicate)
-        
+        //let category = try! Realm().objects(Task.self).filter("category.category = %@", categoryName)
+        //taskArray = category
+        //rlmtask = task.category.filter("category = %@", categoryName)
+        //let tasks = try! Realm().objects(Task.self).filter("category.category = %@",categoryName)
+        //for task in tasks {
+          //  for category in task.category.filter("category = %@", categoryName){
+              //
+            //}
+        //}
+        //taskArray = rlmtask
+        let rlmid = try! Realm().objects(Task.self).filter("category.category = %@", categoryName)
+        taskArray = rlmid
         tableview.delegate = self
         tableview.dataSource = self
         tableview.reloadData()
@@ -75,10 +93,21 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func cancel() {
         self.pickTextField.text = ""
         self.pickTextField.endEditing(true)
+        
+        taskArray = try! Realm().objects(Task.self).sorted(byKeyPath: "date", ascending: false)
+        
+        tableview.delegate = self
+        tableview.dataSource = self
+        tableview.reloadData()
     }
     
     func done() {
         self.pickTextField.endEditing(true)
+        taskArray = try! Realm().objects(Task.self).sorted(byKeyPath: "date", ascending: false)
+        
+        tableview.delegate = self
+        tableview.dataSource = self
+        tableview.reloadData()
     }
     
     func CGRectMake(_ x: CGFloat, _ y: CGFloat, _ width: CGFloat, _ height: CGFloat) -> CGRect {
@@ -177,6 +206,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        taskArray = try! Realm().objects(Task.self).sorted(byKeyPath: "date", ascending: false)
+        
+        tableview.delegate = self
+        tableview.dataSource = self
         tableview.reloadData()
     }
     func dismissKeyboard(){
