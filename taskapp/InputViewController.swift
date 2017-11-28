@@ -43,25 +43,33 @@ class InputViewController: UIViewController {
             self.task.title = self.titleTextField.text!
             self.task.contents = self.contentsTextView.text
             self.task.date = self.datePicker.date as NSDate
-            self.category.category = self.categoryTextField.text!
-            self.task.category = category
+            //self.category.category = self.categoryTextField.text!
+            
             
             let categoryArray = try! Realm().objects(Category.self).sorted(byKeyPath: "id", ascending: false)
             print(categoryArray)
             //同じカテゴリー名を検索
-            let ctgR = categoryArray.filter("category = %@", self.category.category)
+            let ctgR = categoryArray.filter("category = %@", self.categoryTextField.text!)
             print(ctgR)
             //同じカテゴリー名を入力してたら、すでに登録されているidでカテゴリーを登録する処理
             if ctgR.count > 0{
-                category.id = ctgR[0].id
+                //category.id = ctgR[0].id
+                self.task.category = ctgR[0]
+                
+            }else{
+                self.task.category = category
+                self.category.category = self.categoryTextField.text!
+                self.realm.add(self.category, update:true)
             }
-            self.realm.add(self.category, update:true)
+            
             self.realm.add(self.task, update:true)
+            
             
         }
         setNotification(task: task)
         
         super.viewWillDisappear(animated)
+        
     }
     func setNotification(task: Task){
         let content = UNMutableNotificationContent()

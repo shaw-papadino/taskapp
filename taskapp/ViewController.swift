@@ -45,6 +45,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         self.pickTextField.inputView = ctUIPicker
         self.pickTextField.inputAccessoryView = toolbar
         
+        print(taskArray)
+        print(categoryArray)
         //let tapGesture: UITapGestureRecognizer = UITapGestureRecognizer(target:self, action:#selector(dismissKeyboard))
         //self.view.addGestureRecognizer(tapGesture)
     }
@@ -68,21 +70,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let categoryName = categoryNum.category
         print(categoryName)
         self.pickTextField.text = categoryArray[row].category
-        //let predicate = NSPredicate(format: "category.category == %@ ", categoryName)
-        //taskArray = try! Realm().objects(Task.self).filter(predicate)
-        //let tskAN = try! Realm().objects(Task.self).filter("category.category = %@", categoryName)
-        //let category = try! Realm().objects(Task.category).filter("category = %@", categoryName)
         
-        //let category = try! Realm().objects(Task.self).filter("category.category = %@", categoryName)
-        //taskArray = category
-        //rlmtask = task.category.filter("category = %@", categoryName)
-        //let tasks = try! Realm().objects(Task.self).filter("category.category = %@",categoryName)
-        //for task in tasks {
-          //  for category in task.category.filter("category = %@", categoryName){
-              //
-            //}
-        //}
-        //taskArray = rlmtask
         let rlmid = try! Realm().objects(Task.self).filter("category.category = %@", categoryName)
         taskArray = rlmid
         tableview.delegate = self
@@ -108,6 +96,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         tableview.delegate = self
         tableview.dataSource = self
         tableview.reloadData()
+        print(taskArray)
+        print(categoryArray)
     }
     
     func CGRectMake(_ x: CGFloat, _ y: CGFloat, _ width: CGFloat, _ height: CGFloat) -> CGRect {
@@ -126,7 +116,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //各セルの内容を返す
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView .dequeueReusableCell(withIdentifier: "Cell", for: indexPath as IndexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath as IndexPath)
         let task = taskArray[indexPath.row]
         cell.textLabel?.text = task.title
         
@@ -187,7 +177,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         if segue.identifier == "cellSegue" {
             let indexPath = self.tableview.indexPathForSelectedRow
             inputViewController.task = taskArray[indexPath!.row]
-            inputViewController.category = categoryArray[indexPath!.row]
+            inputViewController.category = taskArray[indexPath!.row].category
+            //inputViewController.category = categoryArray[indexPath!.row]
+            
+            print(inputViewController.task)
+            
+            print(inputViewController.category)
         } else {
             let task = Task()
             let category = Category()
